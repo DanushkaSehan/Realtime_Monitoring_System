@@ -11,8 +11,10 @@ class AdminVerificationScreen extends StatefulWidget {
 }
 
 class _AdminVerificationScreenState extends State<AdminVerificationScreen> {
-  final TextEditingController _adminUsernameController = TextEditingController();
-  final TextEditingController _adminPasswordController = TextEditingController();
+  final TextEditingController _adminUsernameController =
+      TextEditingController();
+  final TextEditingController _adminPasswordController =
+      TextEditingController();
 
   Future<void> _verifyAdmin(BuildContext context) async {
     final enteredUsername = _adminUsernameController.text;
@@ -29,7 +31,8 @@ class _AdminVerificationScreenState extends State<AdminVerificationScreen> {
                   print('user verifired');
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => const SignUpScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => const SignUpScreen()),
                   );
                   //     await FirebaseFirestore.instance
                   // .collection('Admin').doc(enteredUsername.toString()).get()
@@ -96,7 +99,7 @@ class _AdminVerificationScreenState extends State<AdminVerificationScreen> {
             onPressed: () {
               _verifyAdmin(context);
             },
-            child: const Text("Verify Admin"),
+            child: const Text("Verify"),
           ),
         ],
       ),
