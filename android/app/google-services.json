@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "773399508084",
+    "firebase_url": "https://encoderdata-1bd22-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "encoderdata-1bd22",
+    "storage_bucket": "encoderdata-1bd22.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:773399508084:android:548e4712b36c7e9f45cd21",
+        "android_client_info": {
+          "package_name": "com.example.iotrealtimedatameasure"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "773399508084-9h2isohrc855ef23fqt946de3furfreb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKJG132e65ZZOwEJRsde_o2uCrAuPQLHU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "773399508084-9h2isohrc855ef23fqt946de3furfreb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
