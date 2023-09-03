@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 
 class DownTimeScreen extends StatefulWidget {
   @override
@@ -77,18 +77,20 @@ class _DownTimeScreenState extends State<DownTimeScreen> {
               return LineChart(
                 LineChartData(
                   titlesData: FlTitlesData(
-                    leftTitles: SideTitles(
-                      showTitles: true,
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(showTitles: true),
                     ),
-                    bottomTitles: SideTitles(
-                      showTitles: false,
-                      getTitles: (value) {
-                        // Customize the X-axis titles here
-                        if (value >= 0 && value < dates.length) {
-                          return dates[value.toInt()];
-                        }
-                        return '';
-                      },
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: false,
+                        getTitlesWidget: (double value, TitleMeta meta) {
+                          // Display the date as X-axis labels
+                          if (value >= 0 && value < dates.length) {
+                            return Text(dates[value.toInt()]);
+                          }
+                          return Text('');
+                        },
+                      ),
                     ),
                   ),
                   borderData: FlBorderData(
@@ -105,7 +107,7 @@ class _DownTimeScreenState extends State<DownTimeScreen> {
                     LineChartBarData(
                       spots: dataPoints,
                       isCurved: false,
-                      colors: [Color.fromARGB(255, 243, 5, 5)],
+                      color: Color.fromARGB(255, 243, 5, 5),
                       dotData: FlDotData(show: true),
                       belowBarData: BarAreaData(show: false),
                     ),

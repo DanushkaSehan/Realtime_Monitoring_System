@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 
 class WorkedHourScreen extends StatefulWidget {
   @override
@@ -70,16 +70,20 @@ class _WorkedHourScreenState extends State<WorkedHourScreen> {
               return LineChart(
                 LineChartData(
                     titlesData: FlTitlesData(
-                      leftTitles: SideTitles(showTitles: true),
-                      bottomTitles: SideTitles(
-                        showTitles: false,
-                        getTitles: (value) {
-                          // Display the date as X-axis labels
-                          if (value >= 0 && value < dates.length) {
-                            return dates[value.toInt()];
-                          }
-                          return '';
-                        },
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: true),
+                      ),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: false,
+                          getTitlesWidget: (double value, TitleMeta meta) {
+                            // Display the date as X-axis labels
+                            if (value >= 0 && value < dates.length) {
+                              return Text(dates[value.toInt()]);
+                            }
+                            return Text('');
+                          },
+                        ),
                       ),
                     ),
                     borderData: FlBorderData(
@@ -96,7 +100,7 @@ class _WorkedHourScreenState extends State<WorkedHourScreen> {
                       LineChartBarData(
                         spots: dataPoints,
                         isCurved: false,
-                        colors: [Colors.blue],
+                        color: Colors.blue,
                         dotData: FlDotData(show: true),
                         belowBarData: BarAreaData(show: false),
                       ),
