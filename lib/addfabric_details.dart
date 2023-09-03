@@ -119,14 +119,6 @@ class _FabricScreenState extends State<FabricScreen> {
             ),
           ],
         ),
-
-        //title: Text('Fabric Details'),
-        actions: const [
-          // IconButton(
-          //   icon: Icon(Icons.clear),
-          //   onPressed: _clearListAndReset,
-          // ),
-        ],
       ),
       body: Column(
         children: [
@@ -208,8 +200,8 @@ class _FabricScreenState extends State<FabricScreen> {
                             borderRadius: BorderRadius.circular(
                                 20), // Adjust the radius as needed
                           ),
-                          margin:
-                              const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 4, horizontal: 10),
                           child: ListTile(
                             key: Key(docId),
                             title: Text('$order. $fabricName '),
@@ -271,7 +263,8 @@ class _FabricScreenState extends State<FabricScreen> {
                                             borderRadius: BorderRadius.circular(
                                                 30), // Adjust the radius as needed
                                           ),
-                                          title: const Text('Delete Confirmation'),
+                                          title:
+                                              const Text('Delete Confirmation'),
                                           content: const Text(
                                               'Do you want to delete this fabric ?'),
                                           actions: [
@@ -316,143 +309,3 @@ class _FabricScreenState extends State<FabricScreen> {
     }
   }
 }
-
-
-
-
-
-
-
-// class FabricScreen extends StatefulWidget {
-//   @override
-//   _FabricScreenState createState() => _FabricScreenState();
-// }
-
-// class _FabricScreenState extends State<FabricScreen> {
-//   final TextEditingController _fabricNameController = TextEditingController();
-//   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-//   Future<void> _addFabric(String fabricName, DateTime date, int order) async {
-//     await _firestore.collection('fabrics').add({
-//       'name': fabricName,
-//       'date': date,
-//       'order': order,
-//     });
-//     _fabricNameController.clear();
-//   }
-
-//   Future<void> _clearListAndReset() async {
-//     bool confirmed = await showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           title: Text('Clear List and Reset'),
-//           content: Text(
-//               'Are you sure you want to clear the list and start a new one?'),
-//           actions: [
-//             TextButton(
-//               onPressed: () => Navigator.of(context).pop(false),
-//               child: Text('Cancel'),
-//             ),
-//             TextButton(
-//               onPressed: () => Navigator.of(context).pop(true),
-//               child: Text('Confirm'),
-//             ),
-//           ],
-//         );
-//       },
-//     );
-
-//     if (confirmed == true) {
-//       QuerySnapshot snapshot = await _firestore.collection('fabrics').get();
-//       List<QueryDocumentSnapshot> docs = snapshot.docs;
-//       for (int i = 0; i < docs.length; i++) {
-//         await docs[i].reference.update({'order': i + 1});
-//       }
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Fabric Details'),
-//         actions: [
-//           IconButton(
-//             icon: Icon(Icons.clear),
-//             onPressed: _clearListAndReset,
-//           ),
-//         ],
-//       ),
-//       body: Column(
-//         children: [
-//           Padding(
-//             padding: EdgeInsets.all(16.0),
-//             child: Row(
-//               children: [
-//                 Expanded(
-//                   child: TextField(
-//                     controller: _fabricNameController,
-//                     decoration: InputDecoration(labelText: 'Fabric Name'),
-//                   ),
-//                 ),
-//                 IconButton(
-//                   icon: Icon(Icons.add),
-//                   onPressed: () async {
-//                     QuerySnapshot snapshot =
-//                         await _firestore.collection('fabrics').get();
-//                     int order = snapshot.docs.length + 1;
-//                     DateTime date = DateTime.now();
-//                     _addFabric(_fabricNameController.text, date, order);
-//                   },
-//                 ),
-//               ],
-//             ),
-//           ),
-//           Expanded(
-//             child: StreamBuilder<QuerySnapshot>(
-//               stream:
-//                   _firestore.collection('fabrics').orderBy('order').snapshots(),
-//               builder: (context, snapshot) {
-//                 if (snapshot.hasData) {
-//                   final fabrics = snapshot.data!.docs;
-//                   return ReorderableListView(
-//                     onReorder: (oldIndex, newIndex) {
-//                       if (oldIndex < newIndex) {
-//                         newIndex -= 1;
-//                       }
-//                       setState(() {
-//                         final fabric = fabrics.removeAt(oldIndex);
-//                         fabrics.insert(newIndex, fabric);
-//                         _updateFabricOrder(fabrics);
-//                       });
-//                     },
-//                     children: fabrics.map((fabric) {
-//                       final docId = fabric.id;
-//                       final fabricName = fabric['name'];
-//                       final order = fabric['order'];
-//                       final date = (fabric['date'] as Timestamp).toDate();
-//                       return ListTile(
-//                         key: Key(docId),
-//                         title: Text('$order. $fabricName - $date'),
-//                       );
-//                     }).toList(),
-//                   );
-//                 }
-//                 return Center(
-//                   child: CircularProgressIndicator(),
-//                 );
-//               },
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   Future<void> _updateFabricOrder(List<DocumentSnapshot> fabrics) async {
-//     for (int i = 0; i < fabrics.length; i++) {
-//       await fabrics[i].reference.update({'order': i + 1});
-//     }
-//   }
-// }
