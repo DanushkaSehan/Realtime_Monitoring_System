@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'downtime_screen.dart';
 import 'workedhours_screen.dart';
+import 'efficiency_screen.dart';
 
 class ReportsScreen extends StatefulWidget {
   const ReportsScreen({super.key});
@@ -39,10 +40,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   shape: const ContinuousRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(50)))),
               onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => FabricScreen()),
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => DownTimeScreen()),
+                );
               },
               icon: const Icon(Icons.area_chart_outlined),
               label: const Text('Down Time'),
@@ -57,7 +58,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const WorkedhourScreen()),
+                  MaterialPageRoute(builder: (context) => WorkedHourScreen()),
                 );
               },
               icon: const Icon(Icons.analytics_outlined),
@@ -71,10 +72,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   shape: const ContinuousRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(50)))),
               onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => WorkedhourScreen()),
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EfficiencyScreen()),
+                );
               },
               icon: const Icon(Icons.add_chart),
               label: const Text('Efficiency'),
