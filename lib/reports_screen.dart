@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'downtime_screen.dart';
-import 'workedhours_screen.dart';
 import 'efficiency_screen.dart';
+import 'maintenancereport_screen.dart';
+import 'workedhours_screen.dart';
 
 class ReportsScreen extends StatefulWidget {
   const ReportsScreen({super.key});
@@ -88,11 +90,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   shape: const ContinuousRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(50)))),
               onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //       builder: (context) => RequestMaintenanceScreen()),
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MaintenanceReportScreen()),
+                );
               },
               icon: const Icon(Icons.add_ic_call),
               label: const Text('Maintenance Report'),
