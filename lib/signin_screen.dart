@@ -1,12 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-//import 'signup_screen.dart';
-import 'admin_verification.dart';
 import 'color_utils.dart';
 import 'home_screen.dart';
+import 'maintenance_screen.dart';
 import 'reset_password.dart';
 import 'reusable_widget.dart';
+import 'signup_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -18,9 +19,6 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final String allowedUid = 'WuFrXfNYglNNuXVQJIQ5MYjDBmf1'; // Allowed UID
-  User? _user; // Authenticated user
-
   @override
   void initState() {
     super.initState();
@@ -28,10 +26,7 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Future<void> _fetchUser() async {
-    final user = FirebaseAuth.instance.currentUser;
-    setState(() {
-      _user = user;
-    });
+    setState(() {});
   }
 
   final TextEditingController _passwordTextController = TextEditingController();
@@ -74,29 +69,53 @@ class _SignInScreenState extends State<SignInScreen> {
                   const SizedBox(
                     height: 5,
                   ),
-                  forgetPassword(context),
-                  firebaseUIButton(context, "Sign In", () {
-                    FirebaseAuth.instance
-                        .signInWithEmailAndPassword(
-                            email: _emailTextController.text,
-                            password: _passwordTextController.text)
-                        .then((value) {
-                      // if (_user?.uid == allowedUid) {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //       builder: (context) => MaintenanceScreen()),
-                      // );
-                      // } else {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const HomeScreen()),
-                      );
-                      //}
-                    }).catchError((error) {
+                  firebaseUIButton(context, "Sign In", () async {
+                    try {
+                      // Authenticate the user
+                      final UserCredential userCredential = await FirebaseAuth
+                          .instance
+                          .signInWithEmailAndPassword(
+                              email: _emailTextController.text,
+                              password: _passwordTextController.text);
+
+                      final user = userCredential.user;
+
+                      // Check the user's role in Firestore
+                      if (user != null) {
+                        final userDoc = await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(user.uid)
+                            .get();
+
+                        final userRole = userDoc.get('role');
+
+                        if (userRole == 'admin') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SignUpScreen()),
+                          );
+                        } else if (userRole == 'maintenance') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MaintenanceScreen()),
+                          );
+                        } else if (userRole == 'manager') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomeScreen()),
+                          );
+                        } else {
+                          // Handle other roles or show an error message
+                          _showSnackBar(context, 'Not Registed This user');
+                        }
+                      }
+                    } catch (e) {
                       _showSnackBar(context, 'Invalid username or password');
-                      print("Error ${error.toString()}");
-                    });
+                      print("Error ${e.toString()}");
+                    }
                   }),
                   signUpOption()
                 ],
@@ -120,20 +139,8 @@ class _SignInScreenState extends State<SignInScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("Don't have account?",
+        const Text("Don't have account? Contact Admin",
             style: TextStyle(color: Colors.white70)),
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AdminVerificationScreen()));
-          },
-          child: const Text(
-            " Sign Up",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-        )
       ],
     );
   }
@@ -149,8 +156,8 @@ class _SignInScreenState extends State<SignInScreen> {
           style: TextStyle(color: Colors.white70),
           textAlign: TextAlign.right,
         ),
-        onPressed: () => Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const ResetPassword())),
+        onPressed: () => Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const ResetPassword())),
       ),
     );
   }

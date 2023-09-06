@@ -131,15 +131,20 @@ class _FabricScreenState extends State<FabricScreen> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(
                           50), // Adjust the radius as needed
-                      color: const Color.fromARGB(
-                          93, 20, 20, 20), // Background color of the container
+                      color: Color.fromARGB(93, 255, 255,
+                          255), // Background color of the container
                     ),
                     child: TextField(
                       controller: _fabricNameController,
-                      decoration: const InputDecoration(
-                        hoverColor: Colors.black26,
+                      decoration: InputDecoration(
+                        //hoverColor: Colors.black26,
                         hintText: 'Fabric Name',
-                        border: InputBorder.none, // Hide the default border
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: new BorderRadius.circular(25.0),
+                          borderSide: const BorderSide(
+                              color: Colors.deepPurple, width: 2),
+                        ),
+                        border: OutlineInputBorder(),
                         contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
                       ),
                     ),
