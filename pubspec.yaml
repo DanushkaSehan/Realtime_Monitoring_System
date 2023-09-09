@@ -45,6 +45,8 @@ dependencies:
   flutter_charts: ^0.5.1
   material3_layout: ^0.0.7
   fl_chart: ^0.63.0
+  syncfusion_flutter_charts: ^22.2.12
+ 
 
 dev_dependencies:
   flutter_test:
