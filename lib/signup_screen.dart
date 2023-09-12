@@ -75,7 +75,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     height: 20,
                   ),
                   reusableTextField("Enter Role", Icons.workspaces_outline,
-                      true, _roleTextController),
+                      false, _roleTextController),
                   const SizedBox(
                     height: 20,
                   ),

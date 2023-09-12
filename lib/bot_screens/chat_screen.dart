@@ -151,65 +151,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-// class ChatScreen extends StatefulWidget {
-//   @override
-//   State createState() => ChatScreenState();
-// }
-
-// class ChatScreenState extends State<ChatScreen> {
-//   final TextEditingController _textController = TextEditingController();
-//   final List<Message> _messages = [];
-
-//   final Map<String, String> predefinedResponses = {
-//     "How do I fix a leaking pipe in the machine?":
-//         "To fix a leaking pipe, follow these steps:...",
-//     "What's the recommended oil change interval?":
-//         "The recommended oil change interval is every 3 months or 1000 hours of operation...",
-//     "How do I change the oil?": "To change the oil, follow these steps:...",
-//     "How do I change the air filter?":
-//         "To change the air filter, follow these steps:...",
-//     "Motor won't start": "To fix this issue, follow these steps:...",
-//     "Motor won't stop": "To fix this issue, follow these steps:...",
-//     "Machine won't start": "To fix this issue, follow these steps:...",
-//     "Machine won't stop": "To fix this issue, follow these steps:...",
-//     "Machine is vibrating":
-//         "Vibration can be extremely damaging to electric motors, frequently causing premature failure. It is often caused by the motor being positioned on an uneven or unstable surface. However, vibration can also be a result of an underlying issue with the motor, such as misalignment or corrosion. Electric motors should be regularly inspected for vibration using a motor analysing tool.Ensure that electric motors are positioned on a flat and stable surface. If vibration still occurs, check for signs of wear, as well as misalignment or loose bearings. ",
-//     "Low resistance in the motor":
-//         "Low resistance is the most common cause of failure in electric motors. It is also often the most difficult to overcome. Under conditions such as overheating, corrosion or physical damage, degradation of the insulation of the internal windings of the motor may occur. This then causes insufficient isolation between the motor windings or conductors, leading to short circuits, leakages and eventually motor failure.",
-//     "Motor is overheating":
-//         "Overheating is generally caused by either a high temperature in the operating environment or poor power quality. It is responsible for around 55% of insulating failures in electric motors. For every 10 degrees Celsius that the temperature of a motor rises, the insulation life is reduced by half.To avoid overheating, ensure that electric motors are kept as cool as possible. This can be done by maintaining as cool an operating environment as possible and regularly checking the temperature of the motor.",
-
-//     // Add more predefined questions and answers here
-//   };
-
-//   // Future<String> sendMessageToChatGPT(String message) async {
-//   //   final apiKey =
-//   //       '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'; // Replace with your ChatGPT API key
-//   //   final apiUrl =
-//   //       'https://api.openai.com/v1/engines/gpt-3.5-turbo/completions'; // GPT-3.5-turbo endpoint
-
-//   //   final response = await http.post(
-//   //     Uri.parse(apiUrl),
-//   //     headers: {
-//   //       'Authorization': 'Bearer $apiKey',
-//   //       'Content-Type': 'application/json',
-//   //     },
-//   //     body: json.encode({
-//   //       'prompt': message,
-//   //       'max_tokens': 100,
-//   //     }),
-//   //   );
-
-//   //   if (response.statusCode == 200) {
-//   //     final data = json.decode(response.body);
-//   //     return data['choices'][0]['text'];
-//   //   } else {
-//   //     print('Error: ${response.statusCode}');
-//   //     print('Response Body: ${response.body}');
-//   //     throw Exception('Failed to send message to ChatGPT');
-//   //   }
-//   // }
-
 class ChatScreen extends StatefulWidget {
   @override
   State createState() => ChatScreenState();
@@ -219,8 +160,31 @@ class ChatScreenState extends State<ChatScreen> {
   final TextEditingController _textController = TextEditingController();
   final List<Message> _messages = [];
 
+  final Map<String, String> predefinedResponses = {
+    "How do I fix a leaking pipe in the machine?":
+        "To fix a leaking pipe, follow these steps:...",
+    "What's the recommended oil change interval?":
+        "The recommended oil change interval is every 3 months or 1000 hours of operation...",
+    "How do I change the oil?": "To change the oil, follow these steps:...",
+    "How do I change the air filter?":
+        "To change the air filter, follow these steps:...",
+    "Motor won't start": "To fix this issue, follow these steps:...",
+    "Motor won't stop": "To fix this issue, follow these steps:...",
+    "Machine won't start": "To fix this issue, follow these steps:...",
+    "Machine won't stop": "To fix this issue, follow these steps:...",
+    "Machine is vibrating":
+        "Vibration can be extremely damaging to electric motors, frequently causing premature failure. It is often caused by the motor being positioned on an uneven or unstable surface. However, vibration can also be a result of an underlying issue with the motor, such as misalignment or corrosion. Electric motors should be regularly inspected for vibration using a motor analysing tool.Ensure that electric motors are positioned on a flat and stable surface. If vibration still occurs, check for signs of wear, as well as misalignment or loose bearings. ",
+    "Low resistance in the motor":
+        "Low resistance is the most common cause of failure in electric motors. It is also often the most difficult to overcome. Under conditions such as overheating, corrosion or physical damage, degradation of the insulation of the internal windings of the motor may occur. This then causes insufficient isolation between the motor windings or conductors, leading to short circuits, leakages and eventually motor failure.",
+    "Motor is overheating":
+        "Overheating is generally caused by either a high temperature in the operating environment or poor power quality. It is responsible for around 55% of insulating failures in electric motors. For every 10 degrees Celsius that the temperature of a motor rises, the insulation life is reduced by half.To avoid overheating, ensure that electric motors are kept as cool as possible. This can be done by maintaining as cool an operating environment as possible and regularly checking the temperature of the motor.",
+
+    // Add more predefined questions and answers here
+  };
+
   Future<String> sendMessageToChatGPT(String message) async {
-    final apiKey = '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';
+    final apiKey =
+        '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'; // Replace with your ChatGPT API key
     final apiUrl =
         'https://api.openai.com/v1/engines/davinci/completions'; // GPT-3.5-turbo endpoint
 
@@ -231,25 +195,61 @@ class ChatScreenState extends State<ChatScreen> {
         'Content-Type': 'application/json',
       },
       body: json.encode({
-        'messages': [
-          {
-            'role': 'system',
-            'content': 'You are a helpful chatbot for machine maintenance.'
-          },
-          {'role': 'user', 'content': message},
-        ],
+        'prompt': message,
+        'max_tokens': 100,
       }),
     );
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return data['choices'][0]['message']['content'];
+      return data['choices'][0]['text'];
     } else {
       print('Error: ${response.statusCode}');
       print('Response Body: ${response.body}');
       throw Exception('Failed to send message to ChatGPT');
     }
   }
+
+// class ChatScreen extends StatefulWidget {
+//   @override
+//   State createState() => ChatScreenState();
+// }
+
+// class ChatScreenState extends State<ChatScreen> {
+//   final TextEditingController _textController = TextEditingController();
+//   final List<Message> _messages = [];
+
+//   Future<String> sendMessageToChatGPT(String message) async {
+//     final apiKey = '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';
+//     final apiUrl =
+//         'https://api.openai.com/v1/engines/davinci/completions'; // GPT-3.5-turbo endpoint
+
+//     final response = await http.post(
+//       Uri.parse(apiUrl),
+//       headers: {
+//         'Authorization': 'Bearer $apiKey',
+//         'Content-Type': 'application/json',
+//       },
+//       body: json.encode({
+//         'messages': [
+//           {
+//             'role': 'system',
+//             'content': 'You are a helpful chatbot for machine maintenance.'
+//           },
+//           {'role': 'user', 'content': message},
+//         ],
+//       }),
+//     );
+
+//     if (response.statusCode == 200) {
+//       final data = json.decode(response.body);
+//       return data['choices'][0]['message']['content'];
+//     } else {
+//       print('Error: ${response.statusCode}');
+//       print('Response Body: ${response.body}');
+//       throw Exception('Failed to send message to ChatGPT');
+//     }
+//   }
 
   void _handleSubmitted(String text) async {
     if (text.isEmpty) return;
@@ -316,11 +316,17 @@ class ChatScreenState extends State<ChatScreen> {
           children: <Widget>[
             Flexible(
               child: TextField(
-                controller: _textController,
-                onSubmitted: _handleSubmitted,
-                decoration:
-                    InputDecoration.collapsed(hintText: 'Send a message'),
-              ),
+                  controller: _textController,
+                  onSubmitted: _handleSubmitted,
+                  decoration: InputDecoration(
+                    labelStyle: TextStyle(color: Colors.white.withOpacity(0.9)),
+                    filled: true,
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    fillColor: Colors.white.withOpacity(0.3),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                  )),
             ),
             IconButton(
               icon: Icon(Icons.send),
