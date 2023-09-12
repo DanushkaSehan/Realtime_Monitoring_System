@@ -3,9 +3,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
+import 'background_widget.dart';
 import 'constants.dart';
 import 'home_screen.dart';
 
@@ -141,12 +143,15 @@ class _ReqMaintenanceState extends State<ReqMaintenance> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 20,
+        shadowColor: Color.fromARGB(255, 59, 33, 102),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(15),
           ),
         ),
         toolbarHeight: 110,
+        foregroundColor: Colors.white,
         backgroundColor: const Color.fromARGB(255, 18, 19, 26),
         title: Row(
           children: [
@@ -156,185 +161,220 @@ class _ReqMaintenanceState extends State<ReqMaintenance> {
               height: 90,
             ),
             const SizedBox(width: 60),
-            const Text(
-              'Request Maintenance',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+            Flexible(
+              child: Container(
+                child: Text(
+                  'Request Maintenance'.tr,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-            ),
+            )
           ],
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 150,
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Machine Number :',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              TextField(
-                enableInteractiveSelection: false,
-                controller: _textTitle,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  //labelText: 'Enter Machine Number',
-                  hoverColor: Color.fromARGB(66, 183, 102, 102),
-                  enabledBorder: new OutlineInputBorder(
-                    borderRadius: new BorderRadius.circular(25.0),
-                    borderSide:
-                        const BorderSide(color: Colors.deepPurple, width: 2),
+      body: Stack(
+        children: [
+          BackgroundWidget(),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 150,
                   ),
-                  focusedBorder: new OutlineInputBorder(
-                    borderRadius: new BorderRadius.circular(25.0),
-                    borderSide: BorderSide(
-                        color: const Color.fromARGB(255, 64, 35, 113)),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Machine Number :'.tr,
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 30),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Issue :',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              TextField(
-                controller: _textBody,
-                decoration: InputDecoration(
-                  hoverColor: Color.fromARGB(66, 183, 102, 102),
-                  enabledBorder: new OutlineInputBorder(
-                    borderRadius: new BorderRadius.circular(25.0),
-                    borderSide:
-                        const BorderSide(color: Colors.deepPurple, width: 2),
+                  SizedBox(
+                    height: 10,
                   ),
-                  focusedBorder: new OutlineInputBorder(
-                    borderRadius: new BorderRadius.circular(25.0),
-                    borderSide: BorderSide(
-                        color: const Color.fromARGB(255, 64, 35, 113)),
-                  ),
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 30),
-              Center(
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: SizedBox(
-                      height: 60,
-                      child: TextButton(
-                        onPressed: () async {
-                          if (check()) {
-                            String tockeyval = await token();
-                            print("DEVICE TOKEN-----$tockeyval");
-                            String tokenkey = await _tokenfun();
-
-                            pushNotificationsSpecificDevice(
-                              title: _textTitle.text,
-                              body: _textBody.text,
-                              token: tokenkey,
-                            );
-                            String formattedDateTime = getCurrentDateTime();
-                            Map<String, dynamic> userData = {
-                              'timestamp': formattedDateTime,
-                              'machine': _textBody.text,
-                              'issue': _textTitle.text,
-                            };
-
-                            await addDataToCollection(
-                                'notifications', userData);
-                            showDialog(
-                              context:
-                                  context, // Use the BuildContext from your widget
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('Request Sumbitted Successfully'),
-                                  //content: Text('Please Fill All Fields'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: Text('OK'),
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  HomeScreen()),
-                                        ); // Close the dialog
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          } else {
-                            showDialog(
-                              context:
-                                  context, // Use the BuildContext from your widget
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('Request Not Sumbitted'),
-                                  content: Text('Please Fill All Fields'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: Text('OK'),
-                                      onPressed: () {
-                                        Navigator.of(context)
-                                            .pop(); // Close the dialog
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          }
-                        },
-                        // style: TextButton.styleFrom(
-                        //     backgroundColor: Colors.deepPurple,
-                        //     foregroundColor: Colors.white),
-                        style: ButtonStyle(
-                            foregroundColor:
-                                MaterialStateProperty.all<Color>(Colors.white),
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Color.fromARGB(255, 85, 54, 139)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                            ))),
-
-                        child: Text(
-                          'Submit',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(
+                          93, 229, 212, 238), // Set the background color
+                      borderRadius: BorderRadius.circular(
+                          25.0), // Optional: Add rounded corners
+                    ),
+                    child: TextField(
+                      enableInteractiveSelection: false,
+                      controller: _textTitle,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        //labelText: 'Enter Machine Number',
+                        hoverColor: Color.fromARGB(66, 183, 102, 102),
+                        enabledBorder: new OutlineInputBorder(
+                          borderRadius: new BorderRadius.circular(25.0),
+                          borderSide: const BorderSide(
+                              color: Color.fromARGB(255, 112, 85, 156),
+                              width: 2),
                         ),
+                        focusedBorder: new OutlineInputBorder(
+                          borderRadius: new BorderRadius.circular(25.0),
+                          borderSide: BorderSide(
+                              color: const Color.fromARGB(255, 64, 35, 113)),
+                        ),
+                        border: OutlineInputBorder(),
                       ),
-                    )),
-                    SizedBox(width: 8),
-                  ],
-                ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Issue :'.tr,
+                      textAlign: TextAlign.left,
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(
+                          93, 229, 212, 238), // Set the background color
+                      borderRadius: BorderRadius.circular(
+                          25.0), // Optional: Add rounded corners
+                    ),
+                    child: TextField(
+                      controller: _textBody,
+                      decoration: InputDecoration(
+                        fillColor: Colors.deepPurple,
+                        hoverColor: Color.fromARGB(66, 183, 102, 102),
+                        enabledBorder: new OutlineInputBorder(
+                          borderRadius: new BorderRadius.circular(25.0),
+                          borderSide: const BorderSide(
+                              color: Colors.deepPurple, width: 2),
+                        ),
+                        focusedBorder: new OutlineInputBorder(
+                          borderRadius: new BorderRadius.circular(25.0),
+                          borderSide: BorderSide(
+                              color: const Color.fromARGB(255, 64, 35, 113)),
+                        ),
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 50),
+                  Center(
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: SizedBox(
+                          height: 60,
+                          child: TextButton(
+                            onPressed: () async {
+                              if (check()) {
+                                String tockeyval = await token();
+                                print("DEVICE TOKEN-----$tockeyval");
+                                String tokenkey = await _tokenfun();
+
+                                pushNotificationsSpecificDevice(
+                                  title: _textTitle.text,
+                                  body: _textBody.text,
+                                  token: tokenkey,
+                                );
+                                String formattedDateTime = getCurrentDateTime();
+                                Map<String, dynamic> userData = {
+                                  'timestamp': formattedDateTime,
+                                  'machine': _textBody.text,
+                                  'issue': _textTitle.text,
+                                };
+
+                                await addDataToCollection(
+                                    'notifications', userData);
+                                showDialog(
+                                  context:
+                                      context, // Use the BuildContext from your widget
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text(
+                                          'Request Submitted Successfully'.tr),
+                                      //content: Text('Please Fill All Fields'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: Text('OK'.tr),
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      HomeScreen()),
+                                            ); // Close the dialog
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              } else {
+                                showDialog(
+                                  context:
+                                      context, // Use the BuildContext from your widget
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Request Not Submitted'.tr),
+                                      content: Text(
+                                          'Please fill machine number and issue'
+                                              .tr),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: Text('OK'.tr),
+                                          onPressed: () {
+                                            Navigator.of(context)
+                                                .pop(); // Close the dialog
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              }
+                            },
+                            // style: TextButton.styleFrom(
+                            //     backgroundColor: Colors.deepPurple,
+                            //     foregroundColor: Colors.white),
+                            style: ButtonStyle(
+                                foregroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.white),
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Color.fromARGB(255, 85, 54, 139)),
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.0),
+                                ))),
+
+                            child: Text(
+                              'Submit'.tr,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        )),
+                        SizedBox(width: 8),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

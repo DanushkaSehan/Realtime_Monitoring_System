@@ -38,7 +38,7 @@ class _RealTimeDataScreenState extends State<RealTimeDataScreen> {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Input Length : ${encoder1Data ?? 0} cm',
+                      'Input Length    : ' '${encoder1Data ?? 0} cm',
                       style: const TextStyle(fontSize: 25),
                     ),
                     Text(

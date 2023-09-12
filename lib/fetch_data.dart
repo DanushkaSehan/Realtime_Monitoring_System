@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 //import 'package:flutter_firebase_series/screens/update_record.dart';
 
 class FetchData extends StatefulWidget {
@@ -25,14 +26,14 @@ class _FetchDataState extends State<FetchData> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            student['Input Length'],
+            student['Input Length'.tr],
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
           ),
           const SizedBox(
             height: 5,
           ),
           Text(
-            student['Output Length'],
+            student['Output Length'.tr],
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
           ),
           const SizedBox(

@@ -19,7 +19,8 @@ class _EfficiencyScreenState extends State<EfficiencyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Efficiency Chart'),
+        elevation: 20,
+        shadowColor: Color.fromARGB(255, 59, 33, 102),
         actions: [
           IconButton(
             icon: Icon(Icons.list),
@@ -28,6 +29,35 @@ class _EfficiencyScreenState extends State<EfficiencyScreen> {
             },
           ),
         ],
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(15),
+          ),
+        ),
+        toolbarHeight: 110,
+        foregroundColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 18, 19, 26),
+        title: Row(
+          children: [
+            Image.asset(
+              'assets/images/FabriTrack logo.png',
+              width: 90,
+              height: 90,
+            ),
+            const SizedBox(width: 60),
+            Flexible(
+              child: Container(
+                child: Text(
+                  'Efficiency \n    Chart',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
       body: StreamBuilder(
         stream: reference.onValue,

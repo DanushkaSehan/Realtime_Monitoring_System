@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'color_utils.dart';
+//import 'color_utils.dart';
 import 'reset_password.dart';
 import 'reusable_widget.dart';
 import 'signin_screen.dart';
@@ -42,9 +42,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
             height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
                 gradient: LinearGradient(colors: [
-              hexStringToColor("#240638"),
-              hexStringToColor("#200b72"),
-              hexStringToColor("#5500cc")
+              // hexStringToColor("#240638"),
+              // hexStringToColor("#200b72"),
+              // hexStringToColor("#5500cc")
+              Color.fromARGB(255, 37, 0, 76),
+              Color.fromARGB(255, 45, 1, 91),
+              Color.fromARGB(255, 61, 14, 111),
+              Color.fromARGB(255, 65, 11, 123),
+              Color.fromARGB(255, 66, 0, 137),
             ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
             child: SingleChildScrollView(
                 child: Padding(
@@ -98,7 +103,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         'email': email,
                         'role': role,
                       });
-                      _showSnackBar("Sign up successful", Colors.green);
+                      _showSnackBar("Sign up successful",
+                          Color.fromARGB(255, 1, 217, 29));
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => SignInScreen()),

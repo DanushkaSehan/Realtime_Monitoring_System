@@ -1,5 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'bot_screens/chat_screen.dart';
+import 'signin_screen.dart';
 
 class MaintenanceScreen extends StatefulWidget {
   const MaintenanceScreen({super.key});
@@ -9,13 +15,61 @@ class MaintenanceScreen extends StatefulWidget {
 }
 
 class _MaintenanceScreenState extends State<MaintenanceScreen> {
+  List<bool> isSelected = [false, true]; // Initial state for ToggleButtons
+
+  bool switchValue = true;
+  Locale currentLocale = Locale('en', 'US'); // Default locale
+  @override
+  void initState() {
+    super.initState();
+    // Load saved switchValue and locale from SharedPreferences
+    loadPreferences();
+  }
+
+  void loadPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      switchValue = prefs.getBool('switchValue') ?? false;
+      currentLocale = Locale(prefs.getString('localeLanguage') ?? 'si', 'SI');
+    });
+  }
+
+  void savePreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('switchValue', switchValue);
+    prefs.setString('localeLanguage', currentLocale.languageCode);
+  }
+
+  void _onToggle(int index) {
+    setState(() {
+      for (int buttonIndex = 0;
+          buttonIndex < isSelected.length;
+          buttonIndex++) {
+        isSelected[buttonIndex] = buttonIndex == index;
+      }
+      if (index == 1) {
+        currentLocale = Locale('si', 'SI');
+      } else {
+        currentLocale = Locale('en', 'US');
+      }
+
+      // Save switchValue and locale to SharedPreferences
+      savePreferences();
+      // Update locale using Get
+      Get.updateLocale(currentLocale);
+    });
+  }
+
   final TextEditingController _issueController = TextEditingController();
+  final TextEditingController _machineController = TextEditingController();
 
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
 
   void _addIssue(String collectionName) async {
-    if (_issueController.text.isNotEmpty && _selectedDate != null) {
+    if (_machineController.text.isNotEmpty &&
+        _issueController.text.isNotEmpty &&
+        _selectedDate != null) {
       try {
         DateTime selectedDateTime = DateTime(
           _selectedDate!.year,
@@ -26,6 +80,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
         );
 
         await FirebaseFirestore.instance.collection(collectionName).add({
+          'machine': _machineController.text,
           'issue': _issueController.text,
           'date': selectedDateTime,
         });
@@ -83,7 +138,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Notifications'),
+              title: Text('Notifications'.tr),
               content: SingleChildScrollView(
                 child: Column(
                   children: dataList,
@@ -94,7 +149,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Close'),
+                  child: Text('Close'.tr),
                 ),
               ],
             );
@@ -114,11 +169,56 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
+      initialIndex: 1,
       child: Scaffold(
           appBar: AppBar(
+            elevation: 20,
+            shadowColor: Color.fromARGB(255, 59, 33, 102),
+            automaticallyImplyLeading: false,
+            actions: <Widget>[
+              IconButton(
+                icon: const Icon(
+                  Icons.logout_outlined,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Confirm Logout'.tr),
+                        content: Text('Are you sure you want to log out?'.tr),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pop(false); // Dismiss the dialog with "No"
+                            },
+                            child: Text('No'.tr),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              FirebaseAuth.instance.signOut().then((value) {
+                                print("Signed Out");
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const SignInScreen()));
+                              });
+                            },
+                            child: Text('Yes'.tr),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              )
+            ],
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(
-                bottom: Radius.circular(15),
+                bottom: Radius.circular(25),
               ),
             ),
             toolbarHeight: 110,
@@ -131,36 +231,91 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                   height: 90,
                 ),
                 const SizedBox(width: 60),
-                const Text(
-                  'Maintenance Issues',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                SizedBox(
+                  height: 25,
+                  child: ToggleButtons(
+                    fillColor: Colors.white,
+                    color: Colors.cyan,
+                    borderColor: Colors.white,
+                    selectedColor: Colors.deepPurple,
+                    borderRadius: BorderRadius.circular(25),
+                    renderBorder: true,
+                    isSelected: isSelected,
+                    onPressed: _onToggle,
+                    children: [
+                      Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                          ),
+                          child: Text('EN')), // Icon for the first mode
+                      Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          child: Text('SI')), // Icon for the second mode
+                    ],
                   ),
                 ),
               ],
-
-              // title: Text('$subNodeKey'),
             ),
-            bottom: const TabBar(
+            bottom: TabBar(
+              indicator: BoxDecoration(
+                color: Colors.deepPurple,
+                //shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              indicatorSize: TabBarIndicatorSize.tab,
+              splashBorderRadius: BorderRadius.circular(30),
               tabs: [
-                Tab(text: 'Motor Repair'),
-                Tab(text: 'Belt Repair'),
-                Tab(text: 'Roll Repair'),
+                Tab(
+                  text: 'Motor Repair'.tr,
+                ),
+                Tab(text: 'Belt Repair'.tr),
+                Tab(text: 'Roll Repair'.tr),
               ],
+              labelColor: Colors.white,
+              unselectedLabelColor: Color.fromARGB(166, 171, 184, 244),
+              automaticIndicatorColorAdjustment: false,
             ),
           ),
-          body: const TabBarView(
+          body: TabBarView(
             children: [
-              MaintenanceCategory(collectionName: 'motorrepair'),
-              MaintenanceCategory(collectionName: 'beltrepair'),
-              MaintenanceCategory(collectionName: 'rollrepair'),
+              Center(
+                child: GlowingOverscrollIndicator(
+                    color: Colors.deepPurple,
+                    axisDirection: AxisDirection.down,
+                    child: MaintenanceCategory(collectionName: 'motorrepair')),
+              ),
+              GlowingOverscrollIndicator(
+                  color: Colors.deepPurple,
+                  axisDirection: AxisDirection.down,
+                  child: Center(
+                      child:
+                          MaintenanceCategory(collectionName: 'beltrepair'))),
+              GlowingOverscrollIndicator(
+                  color: Colors.deepPurple,
+                  axisDirection: AxisDirection.down,
+                  child: Center(
+                      child:
+                          MaintenanceCategory(collectionName: 'rollrepair'))),
             ],
           ),
           floatingActionButton: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              FloatingActionButton(
+                backgroundColor: const Color.fromARGB(255, 141, 84, 177),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ChatScreen()));
+                },
+                tooltip: 'Action 2',
+                child: Icon(Icons.chat_outlined),
+              ),
+              SizedBox(
+                height: 8,
+              ),
               FloatingActionButton(
                 backgroundColor: const Color.fromARGB(255, 141, 84, 177),
                 onPressed: () {
@@ -196,14 +351,19 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
-                            title: const Text('Add Issue'),
+                            title: Text('Add Issue'.tr),
                             content: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 TextField(
+                                  controller: _machineController,
+                                  decoration: InputDecoration(
+                                      labelText: 'Machine Number'.tr),
+                                ),
+                                TextField(
                                   controller: _issueController,
                                   decoration:
-                                      const InputDecoration(labelText: 'Issue'),
+                                      InputDecoration(labelText: 'Issue'.tr),
                                 ),
                                 const SizedBox(height: 10),
                                 TextButton(
@@ -211,21 +371,21 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                                     Navigator.of(context).pop();
                                     _addIssue('motorrepair');
                                   },
-                                  child: const Text('Add to Motor'),
+                                  child: Text('Add to Motor'.tr),
                                 ),
                                 TextButton(
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                     _addIssue('beltrepair');
                                   },
-                                  child: const Text('Add to Belt'),
+                                  child: Text('Add to Belt'.tr),
                                 ),
                                 TextButton(
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                     _addIssue('rollrepair');
                                   },
-                                  child: const Text('Add to Roll'),
+                                  child: Text('Add to Roll'.tr),
                                 ),
                               ],
                             ),
@@ -235,7 +395,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                     }
                   }
                 },
-                label: const Text('Add Issue'),
+                label: Text('Add Issue'.tr),
                 icon: const Icon(Icons.add),
               ),
             ],
@@ -254,6 +414,9 @@ class MaintenanceCategory extends StatelessWidget {
     final issueData = docSnapshot.data() as Map<String, dynamic>;
     final TextEditingController editedIssueController =
         TextEditingController(text: issueData['issue']);
+
+    final TextEditingController editedmachineController =
+        TextEditingController(text: issueData['machine']);
     DateTime? selectedDate = issueData['date']?.toDate();
 
     selectedDate = await showDatePicker(
@@ -271,26 +434,33 @@ class MaintenanceCategory extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30),
             ),
-            title: const Text('Edit Issue'),
+            title: Text('Edit Issue'.tr),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
+                  controller: editedmachineController,
+                  decoration: InputDecoration(labelText: 'Machine Number'.tr),
+                ),
+                TextField(
                   controller: editedIssueController,
-                  decoration: const InputDecoration(labelText: 'Issue'),
+                  decoration: InputDecoration(labelText: 'Issue'.tr),
                 ),
                 const SizedBox(height: 10),
                 TextButton(
                   onPressed: () async {
                     String editedIssue = editedIssueController.text;
+                    String editedmachine = editedmachineController.text;
+
                     await docSnapshot.reference.update({
                       'issue': editedIssue,
                       'date': selectedDate,
+                      'machine': editedmachine,
                     });
 
                     Navigator.of(context).pop();
                   },
-                  child: const Text('Save'),
+                  child: Text('Save'.tr),
                 ),
               ],
             ),
@@ -306,20 +476,20 @@ class MaintenanceCategory extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Confirm Delete'),
-          content: const Text('Are you sure you want to delete this issue?'),
+          title: Text('Delete Confirmation'.tr),
+          content: Text('Are you sure you want to delete this issue?'.tr),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(false); // Cancel delete
               },
-              child: const Text('Cancel'),
+              child: Text('Cancel'.tr),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(true); // Confirm delete
               },
-              child: const Text('Delete'),
+              child: Text('Delete'.tr),
             ),
           ],
         );
@@ -341,13 +511,13 @@ class MaintenanceCategory extends StatelessWidget {
         }
 
         if (snapshot.hasError) {
-          return const Center(child: Text('Error fetching data'));
+          return Center(child: Text('Network error'.tr));
         }
 
         final docs = snapshot.data?.docs;
 
         if (docs == null || docs.isEmpty) {
-          return const Center(child: Text('No issues available.'));
+          return Center(child: Text('No issues available'.tr));
         }
 
         return ListView.builder(
@@ -356,11 +526,12 @@ class MaintenanceCategory extends StatelessWidget {
             final docSnapshot = docs[index];
 
             var issueData = docSnapshot.data() as Map<String, dynamic>;
+            var machine = issueData['machine'] ?? '';
             var issue = issueData['issue'] ?? '';
             var date = issueData['date']?.toDate() ?? DateTime.now();
 
             return ListTile(
-              title: Text(issue),
+              title: Text('$machine - $issue'),
               subtitle: Text('Date: ${date.toString()}'),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
