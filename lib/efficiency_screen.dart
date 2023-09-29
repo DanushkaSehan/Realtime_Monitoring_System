@@ -1,6 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class EfficiencyScreen extends StatefulWidget {
   @override
@@ -10,8 +10,9 @@ class EfficiencyScreen extends StatefulWidget {
 class _EfficiencyScreenState extends State<EfficiencyScreen> {
   final DatabaseReference reference =
       FirebaseDatabase.instance.ref('Device 01/Day');
-  double maxY = 1000.0; // Initial maxY value
+  double maxY = 100.0; // Initial maxY value
   List<String> dates = [];
+  List<Map<String, double>> dataPoints = [];
   Map<String, double> totalDurations = {};
   Map<String, double> efficiencies = {}; // Store efficiency for each day
 
@@ -69,8 +70,8 @@ class _EfficiencyScreenState extends State<EfficiencyScreen> {
                   dataSnapshot.value as Map<dynamic, dynamic>;
               dates = dayData.keys.cast<String>().toList();
 
-              List<FlSpot> dataPoints = [];
               dates.clear();
+              dataPoints.clear();
               totalDurations.clear();
               efficiencies.clear();
 
@@ -98,65 +99,88 @@ class _EfficiencyScreenState extends State<EfficiencyScreen> {
                 if (totalDuration > maxTotalDuration) {
                   maxTotalDuration = totalDuration;
                 }
-                dataPoints
-                    .add(FlSpot(dates.indexOf(date).toDouble(), efficiency));
+
+                dataPoints.add({
+                  'x': dates.indexOf(date).toDouble(),
+                  'y': efficiency,
+                });
               }
 
-              maxY = 100; // Set maxY value for efficiency chart
+              maxY = 100.0; // Set maxY value for efficiency chart
 
-              return LineChart(
-                LineChartData(
-                  titlesData: FlTitlesData(
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: true),
-                    ),
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: false,
-                        getTitlesWidget: (double value, TitleMeta meta) {
-                          // Display the date as X-axis labels
-                          if (value >= 0 && value < dates.length) {
-                            return Text(dates[value.toInt()]);
-                          }
-                          return Text('');
-                        },
+              return Center(
+                child: Container(
+                  height: 700, // Set the desired height
+                  width: 420, // Set the desired width
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Card(
+                            elevation: 4,
+                            margin: EdgeInsets.all(8),
+                            color: Colors.green,
+                            child: Padding(
+                              padding: EdgeInsets.all(8),
+                              child: Text(
+                                'Y axis: Efficiency (%)',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Card(
+                            elevation: 4,
+                            margin: EdgeInsets.all(8),
+                            color: Colors.green,
+                            child: Padding(
+                              padding: EdgeInsets.all(8),
+                              child: Text(
+                                'X axis: Date',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ),
-                  borderData: FlBorderData(
-                    show: true,
-                  ),
-                  gridData: FlGridData(
-                    show: true,
-                  ),
-                  minX: 0,
-                  maxX: (dates.length - 1).toDouble(),
-                  minY: 0,
-                  maxY: maxY,
-                  lineBarsData: [
-                    LineChartBarData(
-                      spots: dataPoints,
-                      isCurved: false,
-                      color: Color.fromARGB(255, 5, 243, 45),
-                      dotData: FlDotData(show: true),
-                      belowBarData: BarAreaData(show: false),
-                    ),
-                  ],
-                  lineTouchData: LineTouchData(
-                    touchTooltipData: LineTouchTooltipData(
-                      tooltipBgColor: Colors.green,
-                      getTooltipItems: (List<LineBarSpot> lineBarsSpot) {
-                        return lineBarsSpot.map((LineBarSpot spot) {
-                          final String date = dates[spot.x.toInt()];
-                          final double efficiency = efficiencies[date] ?? 0.0;
-
-                          return LineTooltipItem(
-                            '$date\nEfficiency: $efficiency %',
-                            TextStyle(color: Colors.white),
-                          );
-                        }).toList();
-                      },
-                    ),
+                      Expanded(
+                        child: SfCartesianChart(
+                          primaryXAxis: CategoryAxis(
+                            labelPosition: ChartDataLabelPosition.outside,
+                          ),
+                          primaryYAxis: NumericAxis(
+                            maximum: maxY,
+                            labelFormat: '{value} ',
+                            axisLine: AxisLine(width: 0),
+                          ),
+                          series: <LineSeries<Map<String, double>, double>>[
+                            LineSeries<Map<String, double>, double>(
+                              dataSource: dataPoints,
+                              xValueMapper: (data, _) => data['x']!,
+                              yValueMapper: (data, _) => data['y']!,
+                              color: Colors.green, // Set the chart color to red
+                            ),
+                          ],
+                          zoomPanBehavior: ZoomPanBehavior(
+                            enablePinching: true,
+                            enableDoubleTapZooming: true,
+                            enablePanning: true,
+                          ),
+                          tooltipBehavior: TooltipBehavior(
+                            enable: true,
+                            header: 'Efficiency',
+                            duration: 3000,
+                            format: 'point.x : point.y %',
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               );

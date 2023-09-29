@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'background_widget.dart';
+import 'qr_scanner/qr_screen.dart';
 
 class FabricScreen extends StatefulWidget {
   const FabricScreen({super.key});
@@ -62,6 +63,22 @@ class _FabricScreenState extends State<FabricScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(
+              Icons.qr_code_scanner_outlined,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => QRScannerScreen(),
+                ),
+              );
+            },
+          )
+        ],
         elevation: 20,
         shadowColor: Color.fromARGB(255, 59, 33, 102),
         shape: const RoundedRectangleBorder(
@@ -83,7 +100,7 @@ class _FabricScreenState extends State<FabricScreen> {
             Flexible(
               child: Container(
                 child: Text(
-                  'Fabric Details'.tr,
+                  'Fabric \nDetails'.tr,
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,

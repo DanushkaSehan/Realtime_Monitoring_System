@@ -105,37 +105,74 @@ class _WorkedHourScreenState extends State<WorkedHourScreen> {
                 child: Container(
                   height: 700, // Set the desired height
                   width: 420, // Set the desired width
-                  child: SfCartesianChart(
-                    primaryXAxis: CategoryAxis(
-                      labelPosition: ChartDataLabelPosition.outside,
-                      title: AxisTitle(text: 'Date'),
-                    ),
-                    primaryYAxis: NumericAxis(
-                      //final String date = dates(point.x.toInt());
-                      maximum: maxY,
-                      labelFormat: '{value} ',
-
-                      axisLine: AxisLine(width: 0),
-                      title: AxisTitle(text: 'Total Duration (min)'),
-                    ),
-                    series: <LineSeries<Map<String, double>, double>>[
-                      LineSeries<Map<String, double>, double>(
-                        dataSource: dataPoints,
-                        xValueMapper: (data, _) => data['x']!,
-                        yValueMapper: (data, _) => data['y']!,
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Card(
+                            elevation: 4,
+                            margin: EdgeInsets.all(8),
+                            color: Colors.blueAccent.shade100,
+                            child: Padding(
+                              padding: EdgeInsets.all(8),
+                              child: Text(
+                                'Y axis: Total Duration (min)',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Card(
+                            elevation: 4,
+                            margin: EdgeInsets.all(8),
+                            color: Colors.blueAccent.shade100,
+                            child: Padding(
+                              padding: EdgeInsets.all(8),
+                              child: Text(
+                                'X axis: Date',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Expanded(
+                        child: SfCartesianChart(
+                          primaryXAxis: CategoryAxis(
+                            labelPosition: ChartDataLabelPosition.outside,
+                          ),
+                          primaryYAxis: NumericAxis(
+                            maximum: maxY,
+                            labelFormat: '{value} ',
+                            axisLine: AxisLine(width: 0),
+                          ),
+                          series: <LineSeries<Map<String, double>, double>>[
+                            LineSeries<Map<String, double>, double>(
+                              dataSource: dataPoints,
+                              xValueMapper: (data, _) => data['x']!,
+                              yValueMapper: (data, _) => data['y']!,
+                            ),
+                          ],
+                          zoomPanBehavior: ZoomPanBehavior(
+                            enablePinching: true,
+                            enableDoubleTapZooming: true,
+                            enablePanning: true,
+                          ),
+                          tooltipBehavior: TooltipBehavior(
+                            enable: true,
+                            header: 'Total Duration',
+                            duration: 3000,
+                            format: 'point.x : point.y min',
+                          ),
+                        ),
                       ),
                     ],
-                    zoomPanBehavior: ZoomPanBehavior(
-                      enablePinching: true,
-                      enableDoubleTapZooming: true,
-                      enablePanning: true,
-                    ),
-                    tooltipBehavior: TooltipBehavior(
-                      enable: true,
-                      header: 'Total Duration',
-                      duration: 3000,
-                      format: 'point.x : point.y min',
-                    ),
                   ),
                 ),
               );

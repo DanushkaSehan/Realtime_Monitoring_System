@@ -36,7 +36,7 @@ class _MaintenanceReportScreenState extends State<MaintenanceReportScreen> {
               ),
               const SizedBox(width: 60),
               Text(
-                'Maintenance Report',
+                'Maintenance \n     Report',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,

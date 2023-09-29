@@ -50,7 +50,7 @@ android {
         applicationId "com.example.iotrealtimedatameasure"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion 30
+        minSdkVersion 28
         targetSdkVersion 26
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

@@ -259,14 +259,34 @@ class ChatScreenState extends State<ChatScreen> {
       _textController.clear();
     });
 
-    try {
-      final response = await sendMessageToChatGPT(text);
+    //   try {
+    //     final response = await sendMessageToChatGPT(text);
+    //     setState(() {
+    //       _messages.add(Message(response, false)); // ChatGPT's response
+    //     });
+    //   } catch (e) {
+    //     // Handle API request errors
+    //     print('Error: $e');
+    //   }
+    // }
+
+    // Check if the user's input matches a predefined question
+    final predefinedAnswer = predefinedResponses[text];
+    if (predefinedAnswer != null) {
       setState(() {
-        _messages.add(Message(response, false)); // ChatGPT's response
+        _messages.add(Message(predefinedAnswer, false)); // Predefined answer
       });
-    } catch (e) {
-      // Handle API request errors
-      print('Error: $e');
+    } else {
+      // User's question doesn't match predefined responses, ask ChatGPT
+      try {
+        final response = await sendMessageToChatGPT(text);
+        setState(() {
+          _messages.add(Message(response, false)); // ChatGPT's response
+        });
+      } catch (e) {
+        // Handle API request errors
+        print('Error: $e');
+      }
     }
   }
 
@@ -309,7 +329,7 @@ class ChatScreenState extends State<ChatScreen> {
 
   Widget _buildTextComposer() {
     return IconTheme(
-      data: IconThemeData(color: Colors.blue),
+      data: IconThemeData(color: Color.fromARGB(255, 137, 30, 224)),
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 8.0),
         child: Row(
