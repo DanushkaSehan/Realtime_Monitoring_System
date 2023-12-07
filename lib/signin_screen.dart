@@ -112,6 +112,12 @@ class _SignInScreenState extends State<SignInScreen> {
                             MaterialPageRoute(
                                 builder: (context) => HomeScreen()),
                           );
+                        } else if (userRole == 'supervisor') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomeScreen()),
+                          );
                         } else {
                           // Handle other roles or show an error message
                           _showSnackBar(context, 'Not Registed This user');

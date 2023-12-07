@@ -61,10 +61,15 @@ class _DataScreenState extends State<DataScreen> {
         children: [
           SizedBox(
             height: 10,
+            child: Container(
+              color: Colors.transparent,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(10),
             child: CupertinoSlidingSegmentedControl(
+              backgroundColor: Color.fromARGB(76, 63, 81, 181),
+              thumbColor: Color.fromARGB(132, 63, 81, 181),
               children: {
                 0: Text('Real-Time Data'.tr),
                 1: Text('Day-Wise Data'.tr),

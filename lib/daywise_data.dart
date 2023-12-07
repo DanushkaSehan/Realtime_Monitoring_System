@@ -3,6 +3,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'background_widget.dart';
+
 class DayWiseDataScreen extends StatefulWidget {
   const DayWiseDataScreen({super.key});
 
@@ -59,23 +61,36 @@ class _DayWiseDataScreenState extends State<DayWiseDataScreen> {
               final date = dates[index];
               return Card(
                 elevation: 0, // Adjust the elevation as needed
-                color: const Color.fromARGB(198, 235, 234, 239),
+                //color: Color.fromARGB(100, 122, 93, 240),
                 //shadowColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius:
                       BorderRadius.circular(20), // Adjust the radius as needed
                 ),
                 margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-                child: ListTile(
-                  title: Text(date),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SubNodesListScreen(date: date),
-                      ),
-                    );
-                  },
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [
+                        Color.fromARGB(120, 142, 93, 240),
+                        Color.fromARGB(140, 8, 12, 127),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: ListTile(
+                    title: Text(date),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SubNodesListScreen(date: date),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               );
             },
@@ -258,7 +273,7 @@ class SubNodesListScreen extends StatelessWidget {
                       firestoreSnapshot.data!.docs.isEmpty) {
                     return Card(
                       elevation: 0, // Adjust the elevation as needed
-                      color: const Color.fromARGB(198, 235, 234, 239),
+                      //color: Color.fromARGB(197, 203, 135, 32),
                       //shadowColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(
@@ -266,20 +281,33 @@ class SubNodesListScreen extends StatelessWidget {
                       ),
                       margin: const EdgeInsets.symmetric(
                           vertical: 4, horizontal: 10),
-                      child: ListTile(
-                        title: Text(subNodeKey),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SubNodeDetailsScreen(
-                                date: date,
-                                subNodeKey: subNodeKey,
-                                subNode: subNode,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [
+                              Color.fromARGB(120, 142, 93, 240),
+                              Color.fromARGB(140, 8, 12, 127),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: ListTile(
+                          title: Text(subNodeKey),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SubNodeDetailsScreen(
+                                  date: date,
+                                  subNodeKey: subNodeKey,
+                                  subNode: subNode,
+                                ),
                               ),
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       ),
                     );
                   }
@@ -289,7 +317,7 @@ class SubNodesListScreen extends StatelessWidget {
 
                   return Card(
                     elevation: 0, // Adjust the elevation as needed
-                    color: const Color.fromARGB(198, 235, 234, 239),
+                    //color: const Color.fromARGB(198, 235, 234, 239),
                     //shadowColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(
@@ -297,20 +325,33 @@ class SubNodesListScreen extends StatelessWidget {
                     ),
                     margin:
                         const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-                    child: ListTile(
-                      title: Text(name),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SubNodeDetailsScreen(
-                              date: date,
-                              subNodeKey: name,
-                              subNode: subNode,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            Color.fromARGB(120, 142, 93, 240),
+                            Color.fromARGB(140, 8, 12, 127),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: ListTile(
+                        title: Text(name),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SubNodeDetailsScreen(
+                                date: date,
+                                subNodeKey: name,
+                                subNode: subNode,
+                              ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   );
                 },
@@ -328,18 +369,19 @@ class SubNodeDetailsScreen extends StatelessWidget {
   final String subNodeKey;
   final Map<dynamic, dynamic> subNode;
 
-  const SubNodeDetailsScreen(
-      {super.key,
-      required this.date,
-      required this.subNodeKey,
-      required this.subNode});
+  const SubNodeDetailsScreen({
+    Key? key,
+    required this.date,
+    required this.subNodeKey,
+    required this.subNode,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 20,
-        shadowColor: Color.fromARGB(255, 59, 33, 102),
+        shadowColor: const Color.fromARGB(255, 59, 33, 102),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(15),
@@ -365,28 +407,49 @@ class SubNodeDetailsScreen extends StatelessWidget {
             ),
           ],
         ),
-        // title: Text('$subNodeKey'),
       ),
-      body: ListView.builder(
-        itemCount: subNode.length,
-        itemBuilder: (context, index) {
-          final key = subNode.keys.toList()[index];
-          final value = subNode[key];
-          return ListTile(
-              titleTextStyle: const TextStyle(
-                fontSize: 20,
-
-                //backgroundColor: const Color.fromARGB(255, 218, 126, 126)
-              ),
-              title:
-                  //SizedBox(width: 100),
-                  //Color: Colors.white,
-                  Text('$key:  $value',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        color: Color.fromARGB(255, 6, 6, 6),
-                      )));
-        },
+      body: Stack(
+        children: [
+          BackgroundWidget(), // Add your BackgroundWidget here
+          Padding(
+            padding: const EdgeInsets.only(top: 40.0), // Add top padding
+            child: ListView.builder(
+              itemCount: subNode.length,
+              itemBuilder: (context, index) {
+                final key = subNode.keys.toList()[index];
+                final value = subNode[key];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 4.0,
+                    horizontal: 16.0,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      gradient: LinearGradient(
+                        colors: [
+                          Color.fromARGB(159, 230, 236, 248),
+                          Color.fromARGB(159, 219, 175, 243),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                    child: ListTile(
+                      title: Text(
+                        '$key: $value',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: Color.fromARGB(255, 6, 6, 6),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -395,7 +458,8 @@ class SubNodeDetailsScreen extends StatelessWidget {
 class FilteredDayWiseDataScreen extends StatelessWidget {
   final List<String> filteredDates;
 
-  const FilteredDayWiseDataScreen({super.key, required this.filteredDates});
+  const FilteredDayWiseDataScreen({Key? key, required this.filteredDates})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -432,35 +496,48 @@ class FilteredDayWiseDataScreen extends StatelessWidget {
             ),
           ],
         ),
-
-        //title: Text('Filtered Day Wise Data'),
       ),
-      body: ListView.builder(
-        itemCount: filteredDates.length,
-        itemBuilder: (context, index) {
-          final date = filteredDates[index];
-          return Card(
-            elevation: 0, // Adjust the elevation as needed
-            color: const Color.fromARGB(198, 235, 234, 239),
-            //shadowColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.circular(20), // Adjust the radius as needed
-            ),
-            margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-            child: ListTile(
-              title: Text(date),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SubNodesListScreen(date: date),
+      body: Stack(
+        children: [
+          BackgroundWidget(),
+          ListView.builder(
+            itemCount: filteredDates.length,
+            itemBuilder: (context, index) {
+              final date = filteredDates[index];
+              return Card(
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [
+                        Color.fromARGB(120, 142, 93, 240),
+                        Color.fromARGB(140, 8, 12, 127),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                );
-              },
-            ),
-          );
-        },
+                  child: ListTile(
+                    title: Text(date),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SubNodesListScreen(date: date),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'bot_screens/chat_screen.dart';
+import 'bot_screens/chat_page.dart';
 import 'signin_screen.dart';
 
 class MaintenanceScreen extends StatefulWidget {
@@ -308,7 +308,7 @@ class _MaintenanceScreenState extends State<MaintenanceScreen> {
                 backgroundColor: const Color.fromARGB(255, 141, 84, 177),
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ChatScreen()));
+                      MaterialPageRoute(builder: (context) => ChatPage()));
                 },
                 tooltip: 'Action 2',
                 child: Icon(Icons.chat_outlined),

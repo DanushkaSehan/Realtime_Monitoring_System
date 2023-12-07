@@ -30,11 +30,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
+          foregroundColor: Colors.white,
           backgroundColor: Colors.transparent,
           elevation: 0,
           title: const Text(
             "Sign Up",
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ),
         body: Container(
